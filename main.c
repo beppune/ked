@@ -16,8 +16,10 @@
 struct termios orig_termios;
 
 /*** terminal ***/
+void editorRefreshScreen();
 
 void die(const char *s) {
+	editorRefreshScreen();
 	perror(s);
 	exit(1);
 }
@@ -54,7 +56,8 @@ int editorReadKey() {
 /** output **/
 
 void editorRefreshScreen() {
-	write(STDIN_FILENO, "\x1b[2J", 4);
+	write(STDIN_FILENO, "\x1b[2J", 4); // Clear Screen
+	write(STDIN_FILENO, "\x1b[H", 3); // Position cursor in top-left corner
 }
 
 /*** input ***/
@@ -64,6 +67,7 @@ void editorProcessKeypress() {
 
 	switch(c) {
 		case CTRL_KEY('q'):
+			editorRefreshScreen();
 			exit(0);
 			break;
 	}
